@@ -65,21 +65,22 @@ Django problems with schemas
 
 When using schemas and search_path, without this module, you would encounter
 2 problems:
+
 - all instrospections queries made by Django are performed on the catalog, and
-are not filtering schemas. All defeinitions, for all tables, all schemas, are
-visible on the PostgreSQL catalog (on Djangho 1.11 one the query is filtering on
-the public schema, the other are not filtered).
-So if you have several django applications installed on different schemas on the same database
-**you would see all tables from all installed Django applications** on most queries,
-same thing for indexes, and sometimes you would not detect existing tables or
-indexes (where the public schema filter is applied), big problems.
-Playing with the postgreSQl user **grants** cannot help you, even if the user has
-access to only one schema, all definitions would be visible in the catalog.
-This module  will fix all the catalog queries to restrict visibility to a given
-list of schemas (like 'public' and 'my_app', or just 'my_app').
+ are not filtering schemas. All defeinitions, for all tables, all schemas, are
+ visible on the PostgreSQL catalog (on Djangho 1.11 one the query is filtering on
+ the public schema, the other are not filtered).
+ So if you have several django applications installed on different schemas on the same database
+ **you would see all tables from all installed Django applications** on most queries,
+ same thing for indexes, and sometimes you would not detect existing tables or
+ indexes (where the public schema filter is applied), big problems.
+ Playing with the postgreSQl user **grants** cannot help you, even if the user has
+ access to only one schema, all definitions would be visible in the catalog.
+ This module  will fix all the catalog queries to restrict visibility to a given
+ list of schemas (like 'public' and 'my_app', or just 'my_app').
 - when building foreign keys reference from managed tables to unmanaged tables
-using the schema trick on `db_table` the `"."`  injection would be reapplied on
-the constraint name, preventing the constraint creation.
+ using the schema trick on `db_table` the `"."`  injection would be reapplied on
+ the constraint name, preventing the constraint creation.
 
 Quickstart
 ----------
@@ -102,6 +103,7 @@ Fix your database connexion settings to use this module instead of the default
 postgresql connector (this module inherits most part of this connector).
 
 .. code-block:: python
+
     DATABASES = {
         'default': {
             'ENGINE': 'django_postgresql_light_schemas.engine',
