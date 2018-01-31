@@ -43,8 +43,12 @@ coverage: ## check code coverage quickly with the default Python
 	open htmlcov/index.html
 
 release: clean ## package and upload a release
-	python setup.py sdist upload
-	python setup.py bdist_wheel upload
+	python setup.py sdist
+	python setup.py bdist_wheel
+	gpg --detach-sign -a dist/*.whl
+	gpg --detach-sign -a dist/*.gz
+	twine upload dist/*.gz dist/*.gz.asc
+	twine upload dist/*.whl dist/*.whl.asc
 
 sdist: clean ## package
 	python setup.py sdist

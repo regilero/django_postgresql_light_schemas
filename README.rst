@@ -24,7 +24,8 @@ If you need/want a deeper schema management search for other django PostgreSQL e
 
 So, what is a light schema hack support, if you cannot declare the scema in the model?
 
-Let's say you use the *classical* trick of hacking the model table name to:
+Let's say you use a postgres user binded to schema which is not `public`, **and/or**
+that you use the *classical* trick of hacking the model table name to:
 
 .. code-block:: python
 
@@ -36,8 +37,10 @@ Let's say you use the *classical* trick of hacking the model table name to:
 And you use a PostgreSQL user where the user's **`search_path` variable** is altered
 to at least includes `my_schema`. Note that by using a `search_path` variable which
 does not start by the public schema you will end up with Django tables set in the
-first schema in this list. If you use only one schema you do not need to hack
-the `db_table` reference as we made here, `my_schema.` would be implicit for PostgreSQL.
+first schema in this list. **If you use only one schema you do not need to hack
+the `db_table` reference as we made here**. `my_schema.` would be **implicit**
+for PostgreSQL.
+
 But if you use several schemas in the same django app you can use the trick for
 all tables which are not managed by django migrations.
 
@@ -51,13 +54,20 @@ all tables which are not managed by django migrations.
     -- Or case 3 (we could continue on that): you access one schema only
     ALTER ROLE "my_django-pg-user" SET search_path='my_app';
 
-You cannot use this model to create migrations, but this covers most of the use cases.
-This present module will help covering the things which are not covered, i.e.:
+You cannot use this hacked model to create migrations, unless you use only one
+schema and you do not hack the `db_table`. But in the two cases (one schema which
+is not public, or several schemas and db_table hacks on non default schemas) Django
+would **mostly** work well.
+
+This present module will help covering the small things which are not covered, i.e.:
 
 - you will be able to make migrations with foreign keys targeting theses hacked models,
   for other models which are not using the trick.
 - you will be able to install several Django applications on several schemas, all
   sharing the same database, if they all use this module.
+- in fact you will lock Django to the right schemas when doing introspection
+  stuff, and avoid bad introspection locked in `public` or detecting stuff on
+  other schemas.
 
 Tested on Django **1.10** & **1.11**.
 
