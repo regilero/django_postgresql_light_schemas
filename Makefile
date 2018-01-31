@@ -28,7 +28,7 @@ clean-pyc: ## remove Python file artifacts
 	find . -name '*~' -exec rm -f {} +
 
 lint: ## check style with flake8
-	flake8 light_schemas tests
+	flake8 django_postgresql_light_schemas tests
 
 test: ## run tests quickly with the default Python
 	python runtests.py tests
@@ -37,7 +37,7 @@ test-all: ## run tests on every Python version with tox
 	tox
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source light_schemas runtests.py tests
+	coverage run --source django_postgresql_light_schemas runtests.py tests
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
