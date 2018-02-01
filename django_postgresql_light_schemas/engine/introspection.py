@@ -49,7 +49,6 @@ class SchemaDatabaseIntrospection(DatabaseIntrospection):
                 AND n.nspname NOT IN ('pg_catalog', 'pg_toast')
                 AND n.nspname IN %s
                 AND pg_catalog.pg_table_is_visible(c.oid)""", [self._supported_schemas])
-        print(cursor.query)
         return [TableInfo(row[0], {'r': 't', 'v': 'v'}.get(row[1]))
                 for row in cursor.fetchall()
                 if row[0] not in self.ignored_tables]
